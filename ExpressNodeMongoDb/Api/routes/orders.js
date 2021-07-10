@@ -1,17 +1,16 @@
-const express = require('express')
-const router= express.Router();
+const express = require("express");
+const router = express.Router();
+const checkAuth = require('../middleware/check-auth');
 
-router.get('/', (req, res, next)=>{
-    res.status(200).json({ message:"orders get "})
-});
+const OrdersController = require('../controllers/orders');
 
-router.post('/', (req, res, next)=>{
-    const order={
-        productId:req.body.productId,
-        quantity:req.body.quantity
-    }
-    res.status(201).json({ message:"orders post ", order:order})
-});
+// Handle incoming GET requests to /orders
+router.get("/", checkAuth, OrdersController.orders_get_all);
 
+router.post("/", checkAuth, OrdersController.orders_create_order);
 
-module.exports=router;
+router.get("/:orderId", checkAuth, OrdersController.orders_get_order);
+
+router.delete("/:orderId", checkAuth, OrdersController.orders_delete_order);
+
+module.exports = router;
